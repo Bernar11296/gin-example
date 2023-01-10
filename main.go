@@ -18,3 +18,14 @@ func main() {
 
 	router.Run()
 }
+
+func render(c *gin.Context, data gin.H, templateName string) {
+	switch c.Request.Header.Get("Accept") {
+	case "application/json":
+		c.JSON(200, data["payload"])
+	case "application/xml":
+		c.XML(200, data["payload"])
+	default:
+		c.HTML(200, templateName, data)
+	}
+}
