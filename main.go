@@ -11,8 +11,20 @@ func main() {
 	router := gin.Default()
 
 	router.LoadHTMLGlob("templates/*")
-
+	router.Use(setUserStatus())
 	router.GET("/", showIndexPage)
+	userRoutes := router.Group("/u")
+	{
+		userRoutes.GET("/login", ensureNotLoggedIn(), showLoginPage)
+
+		userRoutes.POST("/login", ensureLoggedIn(), performLogin)
+
+		userRoutes.GET("/logout", ensureLoggedIn(), logout)
+
+		userRoutes.GET("/register", ensureNotLoggedIn(), showRegistrationPage)
+
+		userRoutes.POST("/register", ensureLoggedIn(), register)
+	}
 
 	router.GET("/article/view/:article_id", getArticle)
 
